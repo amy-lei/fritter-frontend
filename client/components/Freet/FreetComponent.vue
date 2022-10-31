@@ -2,16 +2,13 @@
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <article>
+  <article class="freet">
     <Post
       :post="freet"
       :request="request"
       :isPrivate="false"
     />
-    <div class="comments">
-      <CreateCommentForm
-        :freetId="freet._id"
-      />
+    <div>
       <div v-if="comments.length">
         <button
           v-if="showComments"
@@ -26,6 +23,9 @@
           View comments
         </button>
       </div>
+      <CreateCommentForm
+        :freetId="freet._id"
+      />
     </div>
     <CommentThread
       v-if="showComments"
@@ -98,3 +98,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+.freet {
+  border: 1px solid black;
+}
+</style>
