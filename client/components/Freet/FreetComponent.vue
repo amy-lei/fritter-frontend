@@ -9,7 +9,7 @@
       :isPrivate="false"
     />
     <div>
-      <div v-if="comments.length">
+      <div>
         <button
           v-if="showComments"
           @click="showComments = false"
@@ -22,6 +22,16 @@
         >
           View comments
         </button>
+        <label for="visibility">Filter for:</label>
+          <select
+            name="visibility"
+            :value="visibility"
+            @change="onChange($event.target.value)"
+          >
+            <option value="all">All</option>
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
       </div>
       <CreateCommentForm
         :freetId="freet._id"
@@ -54,9 +64,14 @@ export default {
   data() {
     return {
       showComments: false,
+      visibility: this.$store.state.commentsFilter[this.freet._id]
     }
   },
   mounted() {
+    this.$store.commit('updateCommentFilter', {
+      freetId: this.freet._id,
+      visibility: 'all',
+    });
     this.$store.commit('refreshComments', this.freet._id);
   },
   computed: {
@@ -94,6 +109,16 @@ export default {
         params.failureCallback(e);
 
       }
+    },
+    onChange(newVisibility) {
+      if (this.visibility !== newVisibility) {
+        this.$store.commit('updateCommentFilter', {
+          freetId: this.freet._id,
+          visibility: newVisibility,
+        });
+        this.$store.commit('refreshComments', this.freet._id);
+      }
+      this.visibility = newVisibility;
     }
   }
 };

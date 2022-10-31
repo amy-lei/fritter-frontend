@@ -12,6 +12,7 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
     comments: {}, // Mapping of freetId to its comments
+    commentsFilter: {}, // Mapping of freetId to its comment filter
     username: null, // Username of the logged in user
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
@@ -39,6 +40,14 @@ const store = new Vuex.Store({
        */
       state.filter = filter;
     },
+    updateCommentFilter(state, payload) {
+      /**
+       * Update the stored freets filter to the specified one.
+       * @param filter - Username of the user to fitler freets by
+       */
+      const { freetId, visibility } = payload;
+      Vue.set(state.commentsFilter, freetId, visibility);
+    },
     updateFreets(state, freets) {
       /**
        * Update the stored freets to the provided freets.
@@ -59,7 +68,11 @@ const store = new Vuex.Store({
        * Request the server for the currently available freets.
        * @param freetId - String Id of the freet to fetch comments for
        */
-      const res = await fetch(`/api/comments?freetId=${freetId}`);
+      let visibilityQuery = '';
+      if (state.commentsFilter[freetId] !== 'all') {
+        visibilityQuery = `&visibility=${state.commentsFilter[freetId]}`;
+      }
+      const res = await fetch(`/api/comments?freetId=${freetId}${visibilityQuery}`);
       const comments = await res.json();
       Vue.set(state.comments, freetId, comments);
     },
