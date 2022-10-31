@@ -8,7 +8,10 @@
       :request="request"
       :isPrivate="false"
     />
-    <div class="metadata">
+    <div class="comments">
+      <CreateCommentForm
+        :freetId="freet._id"
+      />
       <div v-if="comments.length">
         <button
           v-if="showComments"
@@ -20,7 +23,7 @@
           v-else
           @click="showComments = true"
         >
-          Show comments
+          View comments
         </button>
       </div>
     </div>
@@ -36,10 +39,11 @@
 
 import Post from '@/components/common/Post.vue';
 import CommentThread from '@/components/Comment/CommentThread.vue';
+import CreateCommentForm from '@/components/Comment/CreateCommentForm.vue';
 
 export default {
   name: 'FreetComponent',
-  components: {Post, CommentThread},
+  components: {Post, CommentThread, CreateCommentForm},
   props: {
     // Data from the stored freet
     freet: {
