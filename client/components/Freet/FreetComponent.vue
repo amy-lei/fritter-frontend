@@ -8,9 +8,26 @@
       :request="request"
       :isPrivate="false"
     />
+    <div class="metadata">
+      <div v-if="comments.length">
+        <button
+          v-if="showComments"
+          @click="showComments = false"
+        >
+          Hide comments
+        </button>
+        <button
+          v-else
+          @click="showComments = true"
+        >
+          Show comments
+        </button>
+      </div>
+    </div>
     <CommentThread
+      v-if="showComments"
       :freetId="freet._id"
-      :comments="$store.state.comments[freet._id] || []"
+      :comments="comments"
     />
   </article>
 </template>
@@ -30,8 +47,18 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      showComments: false,
+    }
+  },
   mounted() {
     this.$store.commit('refreshComments', this.freet._id);
+  },
+  computed: {
+    comments() {
+      return this.$store.state.comments[this.freet._id] || [];
+    },
   },
   methods: {
     async request(params) {
