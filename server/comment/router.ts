@@ -141,7 +141,7 @@ router.delete(
 /**
  * Modify a comment
  *
- * @name PUT /api/comments/:id
+ * @name PATCH /api/comments/:id
  *
  * @param {string} content - the new content for the comment
  * @return {FreetResponse} - the updated comment
@@ -151,7 +151,7 @@ router.delete(
  * @throws {400} - If the comment content is empty or a stream of empty spaces
  * @throws {413} - If the comment content is more than 140 characters long
  */
-router.put(
+router.patch(
   '/:commentId?',
   [
     userValidator.isUserLoggedIn,

@@ -13,23 +13,6 @@ import CreateForm from '@/components/common/CreateForm.vue';
 export default {
   name: 'CreateFreetForm',
   components: {CreateForm},
-  data() {
-    return {
-      url: '/api/freets',
-      method: 'POST',
-      hasBody: true,
-      fields: [
-        {id: 'content', label: 'Content', value: ''}
-      ],
-      title: 'Create a freet',
-      refreshFreets: true,
-      callback: () => {
-        const message = 'Successfully created a freet!';
-        this.$set(this.alerts, message, 'success');
-        setTimeout(() => this.$delete(this.alerts, message), 3000);
-      }
-    };
-  },
   methods: {
     async request(params) {
       /**

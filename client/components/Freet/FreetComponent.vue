@@ -2,26 +2,36 @@
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <Post
-    :post="freet"
-    :request="request"
-    :isPrivate="false"
-  />
+  <article>
+    <Post
+      :post="freet"
+      :request="request"
+      :isPrivate="false"
+    />
+    <CommentThread
+      :freetId="freet._id"
+      :comments="$store.state.comments[freet._id] || []"
+    />
+  </article>
 </template>
 
 <script>
 
 import Post from '@/components/common/Post.vue';
+import CommentThread from '@/components/Comment/CommentThread.vue';
 
 export default {
   name: 'FreetComponent',
-  components: {Post},
+  components: {Post, CommentThread},
   props: {
     // Data from the stored freet
     freet: {
       type: Object,
       required: true
     }
+  },
+  mounted() {
+    this.$store.commit('refreshComments', this.freet._id);
   },
   methods: {
     async request(params) {

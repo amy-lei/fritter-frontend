@@ -21,7 +21,7 @@ const isValidVisibility = async (req: Request, res: Response, next: NextFunction
 } 
 const getIdData = (req: Request) => {
     switch (req.method) {
-        case 'PUT':
+        case 'PATCH':
         case 'DELETE':
             return req.params;
         case 'POST':
