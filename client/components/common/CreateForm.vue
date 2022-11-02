@@ -4,6 +4,9 @@
 <template>
   <form @submit.prevent="submit">
     <article>
+      <ProfileComponent
+        :username="$store.state.username"
+      />
       <textarea
         :name="content"
         :value="content"
@@ -37,9 +40,11 @@
   </template>
   
   <script>
-  
+  import ProfileComponent from '@/components/common/Profile.vue'
+
   export default {
     name: 'CreateForm',
+    components: {ProfileComponent},
     props: {
       placeholder: String,
       actionLabel: String,
@@ -98,18 +103,18 @@
   <style scoped>
   form {
     border: 1px solid #111;
-    padding: 0.5rem;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     position: relative;
   }
-  
-  article > div {
+
+  form > article {
     display: flex;
-    flex-direction: column;
-  }
   
+  }
+
   form > article p {
     margin: 0;
   }
@@ -124,8 +129,11 @@
   }
   
   textarea {
-     font-family: inherit;
-     font-size: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    flex-grow: 1;
+    padding: 8px;
+    border: 0;
   }
   </style>
   
