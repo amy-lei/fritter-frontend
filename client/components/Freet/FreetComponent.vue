@@ -23,7 +23,8 @@
           >
             View comments
           </button>
-          <label for="visibility">Filter for:</label>
+          <template v-if="isLoggedIn()">
+            <label for="visibility">Filter for:</label>
             <select
               name="visibility"
               :value="visibility"
@@ -33,6 +34,7 @@
               <option value="public">Public</option>
               <option value="private">Private</option>
             </select>
+          </template>
         </div>
         <CreateCommentForm
           :freetId="freet._id"
@@ -53,10 +55,12 @@ import Post from '@/components/common/Post.vue';
 import CommentThread from '@/components/Comment/CommentThread.vue';
 import CreateCommentForm from '@/components/Comment/CreateCommentForm.vue';
 import BlockPanel from '@/components/Block/BlockPanel.vue';
+import LoginContent from '@/components/common/LoginContent.vue';
 
 export default {
   name: 'FreetComponent',
   components: {Post, CommentThread, CreateCommentForm, BlockPanel},
+  mixins: [LoginContent],
   props: {
     // Data from the stored freet
     freet: {

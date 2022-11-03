@@ -2,6 +2,7 @@
 
 <template>
   <CreateForm
+    v-if="isLoggedIn()"
     :placeholder="'Freet your reply'"
     :actionLabel="'Comment'"
     :request="request"
@@ -10,10 +11,12 @@
 </template>
 <script>
 import CreateForm from '@/components/common/CreateForm.vue';
+import LoginContent from '@/components/common/LoginContent.vue';
 
 export default {
   name: 'CreateCommentForm',
   components: {CreateForm},
+  mixins: [LoginContent],
   props: {
     freetId: {
       type: String,

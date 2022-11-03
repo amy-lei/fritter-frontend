@@ -43,12 +43,9 @@ export default {
 </script>
 
 <style scoped>
-article > div {
-  font-style: italic;
-}
-
 .panel {
   border: 1px solid #111;
+  font-style: italic;
   padding: 20px;
   position: relative;
 }

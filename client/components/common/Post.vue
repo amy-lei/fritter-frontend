@@ -38,7 +38,7 @@
         </button>
       </div>
       <div
-        v-else
+        v-else-if="isLoggedIn()"
         class="actions"
       >
         <button
@@ -84,10 +84,12 @@
 <script>
 import ProfileComponent from '@/components/common/Profile.vue';
 import BlockModal from '@/components/Block/BlockModal.vue';
+import LoginContent from '@/components/common/LoginContent.vue';
 
 export default {
   name: 'Post',
   components: {ProfileComponent, BlockModal},
+  mixins: [LoginContent],
   props: {
     // Data from the stored post
     post: {
