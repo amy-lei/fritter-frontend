@@ -25,23 +25,24 @@ const isValidModifier = async (req: Request, res: Response, next: NextFunction) 
 const isValidBlock = async (req: Request, res: Response, next: NextFunction) => {
   const blocker = req.session.userId;
   const blockee = req.body.blockee;
-  if (!blockee || !Types.ObjectId.isValid(blockee)) {
+  if (!blockee) {
     res.status(400).json({
-      error: `Blockee ${blockee} is an invalid ObjectId`
+      error: `Blockee cannot be empty`
     });
     return;
   }
 
-  if (blocker === blockee) {
+  const blockeeUser = await UserCollection.findOneByUsername(blockee);
+  if (!blockeeUser) {
+    res.status(404).json({
+      error: `Cannot find a user with the username ${blockee}`
+    });
+    return;
+  }
+
+  if (blocker === blockeeUser._id) {
     res.status(400).json({
       error: 'Blockee and blocker must be different objects'
-    });
-    return;
-  }
-
-  if (!(await UserCollection.findOneByUserId(blockee))) {
-    res.status(404).json({
-      error: `Cannot find a user corresponding to blockee id ${blockee}`
     });
     return;
   }
@@ -68,7 +69,8 @@ const isBlockExist = async (req: Request, res: Response, next: NextFunction) => 
  * Checks if there is a corresponding block for the blockid
  */
 const isBlockRelationDupe = async (req: Request, res: Response, next: NextFunction) => {
-  const block = await BlockCollection.findOneByFields(req.session.userId, req.body.blockee);
+  const blockeeUser = await UserCollection.findOneByUsername(req.body.blockee);
+  const block = await BlockCollection.findOneByFields(req.session.userId, blockeeUser._id);
   if (block) {
     res.status(400).json({
       error: `Block between ${req.session.userId} and ${req.body.blockee} already exists`

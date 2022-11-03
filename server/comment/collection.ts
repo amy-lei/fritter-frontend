@@ -60,7 +60,6 @@ class CommentCollection {
     ];
     // freetAuthors can see all private posts
     if (user && freetAuthor.toString() === user.toString()) {
-        console.log("author");
         conditions.push({parentFreet, isPrivate: true, parentComment: {$exists: false}, authorId: {$exists: true}});
     }
     return CommentModel.find({$or: conditions})

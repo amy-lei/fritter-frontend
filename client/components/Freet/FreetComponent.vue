@@ -2,47 +2,49 @@
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <article class="freet">
-    <Post
-      :post="freet"
-      :request="request"
-      :isPrivate="false"
-    />
-    <div>
-      <div>
-        <button
-          v-if="showComments"
-          @click="showComments = false"
-        >
-          Hide comments
-        </button>
-        <button
-          v-else
-          @click="showComments = true"
-        >
-          View comments
-        </button>
-        <label for="visibility">Filter for:</label>
-          <select
-            name="visibility"
-            :value="visibility"
-            @change="onChange($event.target.value)"
-          >
-            <option value="all">All</option>
-            <option value="public">Public</option>
-            <option value="private">Private</option>
-          </select>
-      </div>
-      <CreateCommentForm
-        :freetId="freet._id"
+  <BlockPanel :username="freet.author">
+    <article class="freet">
+      <Post
+        :post="freet"
+        :request="request"
+        :isPrivate="false"
       />
-    </div>
-    <CommentThread
-      v-if="showComments"
-      :freetId="freet._id"
-      :comments="comments"
-    />
-  </article>
+      <div>
+        <div>
+          <button
+            v-if="showComments"
+            @click="showComments = false"
+          >
+            Hide comments
+          </button>
+          <button
+            v-else
+            @click="showComments = true"
+          >
+            View comments
+          </button>
+          <label for="visibility">Filter for:</label>
+            <select
+              name="visibility"
+              :value="visibility"
+              @change="onChange($event.target.value)"
+            >
+              <option value="all">All</option>
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+            </select>
+        </div>
+        <CreateCommentForm
+          :freetId="freet._id"
+        />
+      </div>
+      <CommentThread
+        v-if="showComments"
+        :freetId="freet._id"
+        :comments="comments"
+      />
+    </article>
+  </BlockPanel>
 </template>
 
 <script>
@@ -50,10 +52,11 @@
 import Post from '@/components/common/Post.vue';
 import CommentThread from '@/components/Comment/CommentThread.vue';
 import CreateCommentForm from '@/components/Comment/CreateCommentForm.vue';
+import BlockPanel from '@/components/Block/BlockPanel.vue';
 
 export default {
   name: 'FreetComponent',
-  components: {Post, CommentThread, CreateCommentForm},
+  components: {Post, CommentThread, CreateCommentForm, BlockPanel},
   props: {
     // Data from the stored freet
     freet: {

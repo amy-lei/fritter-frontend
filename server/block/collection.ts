@@ -1,6 +1,7 @@
 import type {HydratedDocument, Types} from 'mongoose';
 import type {Block} from './model';
 import BlockModel from './model';
+import UserCollection from '../user/collection';
 
 /**
  * This files contains a class that has the functionality to explore blocks
@@ -11,13 +12,14 @@ class BlockCollection {
    * Add a block to the collection
    *
    * @param {string} blocker - The id of the user doing the blocking
-   * @param {string} blockee - The id of the user being blocked
+   * @param {string} blockee - The username of the user being blocked
    * @return {Promise<HydratedDocument<Block>>} - The newly created block
    */
-  static async addOne(blocker: Types.ObjectId | string, blockee: Types.ObjectId | string): Promise<HydratedDocument<Block>> {
+  static async addOne(blocker: Types.ObjectId | string, blockee: string): Promise<HydratedDocument<Block>> {
+    const blockeeUser = await UserCollection.findOneByUsername(blockee); 
     const block = new BlockModel({
       blocker,
-      blockee
+      blockee: blockeeUser._id
     });
     await block.save();
     return block.populate(['blocker', 'blockee']);
@@ -37,7 +39,7 @@ class BlockCollection {
    * Find a block by blocker/blockee relationship
    *
    * @param {string} blocker - The id of the blocker
-   * @param {string} blocker - The id of the user being blocked
+   * @param {string} blockee - The id of the user being blocked
    * @return {Promise<HydratedDocument<Block>> | Promise<null> } - The block with the given blockid, if any
    */
   static async findOneByFields(blocker: Types.ObjectId | string, blockee: Types.ObjectId | string): Promise<HydratedDocument<Block>> {

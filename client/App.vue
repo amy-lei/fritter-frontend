@@ -20,6 +20,11 @@ export default {
     }).then(res => res.json()).then(res => {
       const user = res.user;
       this.$store.commit('setUsername', user ? user.username : null);
+      if (user) {
+        this.$store.commit('refreshBlocks');
+      } else {
+        this.$store.commit('clearBlocks');
+      }
     });
 
     // Clear alerts on page refresh

@@ -2,31 +2,32 @@
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <div>
+  <BlockPanel :username="comment.author">
     <Post
       :post="comment"
       :request="request"
       :isPrivate="comment.isPrivate"
     />
     <button @click="showForm = true" class="reply-btn">Reply</button>
-      <div v-if="showForm" class="reply-form">
-        <CreateCommentForm
-          :freetId="comment.parentFreet"
-          :commentId="comment._id"
-          />
-        <button @click="showForm = false">X</button>
-      </div>
-  </div>
+    <div v-if="showForm" class="reply-form">
+      <CreateCommentForm
+        :freetId="comment.parentFreet"
+        :commentId="comment._id"
+        />
+      <button @click="showForm = false">X</button>
+    </div>
+  </BlockPanel>
 </template>
 
 <script>
 
 import Post from '@/components/common/Post.vue';
 import CreateCommentForm from '@/components/Comment/CreateCommentForm.vue';
+import BlockPanel from '@/components/Block/BlockPanel.vue';
 
 export default {
   name: 'CommentComponent',
-  components: {Post, CreateCommentForm},
+  components: {Post, CreateCommentForm, BlockPanel},
   props: {
     // Data from the stored freet
     comment: {

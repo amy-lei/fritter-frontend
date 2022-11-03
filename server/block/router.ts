@@ -4,6 +4,7 @@ import BlockCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as blockValidator from './middleware';
 import * as util from './util';
+import UserCollection from 'server/user/collection';
 
 const router = express.Router();
 
@@ -32,7 +33,7 @@ router.get(
  *
  * @name POST /api/blocks
  *
- * @param {string} blockee - The id of the user being blocked
+ * @param {string} blockee - The username of the user being blocked
  * @return {BlockResponse} - The created block
  * @throws {403} - If the user is not logged in
  * @throws {400} - If no blockee was given, the blockee is the logged in user, or

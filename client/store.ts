@@ -14,7 +14,8 @@ const store = new Vuex.Store({
     comments: {}, // Mapping of freetId to its comments
     commentsFilter: {}, // Mapping of freetId to its comment filter
     username: null, // Username of the logged in user
-    alerts: {} // global success/error messages encountered during submissions to non-visible forms
+    alerts: {}, // global success/error messages encountered during submissions to non-visible forms
+    blockedUsers: {},
   },
   mutations: {
     alert(state, payload) {
@@ -55,6 +56,17 @@ const store = new Vuex.Store({
        */
       state.freets = freets;
     },
+    addBlock(state, block) {
+      /**
+       * Add blockee to the list of blocks
+       * @param blockee - username to block
+       */
+      
+      Vue.set(state.blockedUsers, block.blockee, block._id);
+    },
+    clearBlocks(state) {
+      state.blockedUsers = {};
+    },
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.
@@ -65,7 +77,7 @@ const store = new Vuex.Store({
     },
     async refreshComments(state, freetId) {
       /**
-       * Request the server for the currently available freets.
+       * Request the server for the currently available comments.
        * @param freetId - String Id of the freet to fetch comments for
        */
       let visibilityQuery = '';
@@ -76,6 +88,15 @@ const store = new Vuex.Store({
       const comments = await res.json();
       Vue.set(state.comments, freetId, comments);
     },
+    async refreshBlocks(state) {
+      /**
+       * Request the server for the logged in user's blocks
+       */
+      const res = await fetch('/api/blocks?');
+      const blocks = await res.json();
+      state.blockedUsers = {};
+      blocks.forEach(block => Vue.set(state.blockedUsers, block.blockee, block._id));
+    }
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
