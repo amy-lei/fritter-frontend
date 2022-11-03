@@ -1,7 +1,7 @@
 <template>
   <article>
     <div
-      v-if="username in $store.state.blockedUsers"
+      v-if="showPanel"
       class="panel"
       @click="showContent = !showContent"
     >
@@ -13,7 +13,7 @@
     </div>
     <collapse-transition mode="out-in">
       <div
-        v-show="!(username in $store.state.blockedUsers) || showContent"
+        v-show="!(showPanel) || showContent"
         class="wrapper"
       >
         <slot></slot>
@@ -39,6 +39,11 @@ export default {
       showContent: false,
     }
   },
+  computed: {
+    showPanel() {
+      return this.username in this.$store.state.blockedUsers;
+    }
+  },
 }
 </script>
 
@@ -48,6 +53,7 @@ export default {
   font-style: italic;
   padding: 20px;
   position: relative;
+  cursor: pointer;
 }
 .v-enter-active, .v-leave-active {
   transition: all 1s ease-in-out;

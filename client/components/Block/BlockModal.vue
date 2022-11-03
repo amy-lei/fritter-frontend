@@ -4,6 +4,21 @@
     @click="hideModal"
   >
     <div
+      v-if="username in $store.state.blockedUsers"
+      class="modal-container"
+      @click.stop=""
+    >
+      <h2>Unblock @{{ username }}</h2>
+      <p>
+        Content created by @{{ username }} will not longer be collapsed on default.
+      </p>
+      <div class="modal-actions">
+        <button @click="hideModal">Cancel</button>
+        <button @click="unblock">Unblock</button>
+      </div>
+    </div>
+    <div
+      v-else
       class="modal-container"
       @click.stop=""
     >
@@ -45,7 +60,7 @@ export default {
       try {
         const res = await fetch('/api/blocks', options);
         const blockObj = await res.json();
-        this.$store.commit('addBlock', resJson);
+        this.$store.commit('refreshBlocks');
         this.$store.commit('alert', {
           message: `You have successfully blocked @${this.username}`,
           status: 'success',
@@ -62,19 +77,18 @@ export default {
       const options = {
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ blockee: this.username }),
       };
+      const url = `/api/blocks/${this.$store.state.blockedUsers[this.username]}`;
       try {
-        const res = await fetch('/api/blocks', options);
-        const blockObj = await res.json();
-        this.$store.commit('addBlock', resJson.blockee);
+        const res = await fetch(url, options);
+        this.$store.commit('refreshBlocks');
         this.$store.commit('alert', {
-          message: `You have successfully blocked @${this.username}`,
+          message: `You have successfully unblocked @${this.username}`,
           status: 'success',
         });
       } catch (e) {
         this.$store.commit('alert', {
-          message: `Failed to block @${this.username}: ${e}`,
+          message: `Failed to unblock @${this.username}: ${e}`,
           status: 'error',
         });
       }
@@ -103,7 +117,6 @@ export default {
   padding: 20px 30px;
   background-color: #fff;
   border-radius: 8px;
-  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33); */
   z-index: 9999;
 }
 </style>

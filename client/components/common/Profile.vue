@@ -6,21 +6,49 @@
     >
       {{ letter }}
     </div>
-    <h4 v-if="showName">
+    <h4 v-if="showName" class="profile-name">
       @{{ username }}
     </h4>
+    <div
+      v-if="isLoggedIn() && !isSameUser(username)"
+      class="actions"
+    >
+      <button
+        class="toggle-btn"
+        :class="{ selected: username in $store.state.blockedUsers }"
+        @click="showBlockModal = true"
+      >
+        🚫
+      </button>
+      <BlockModal
+        v-if="showBlockModal"
+        :username="username"
+        :hideModal="hideBlockModal"
+      />
+    </div>
   </div>
 </template>
 
 <script>
+import BlockModal from '@/components/Block/BlockModal.vue';
+import LoginContent from '@/components/common/LoginContent.vue';
+
 export default {
   name: 'ProfileComponent',
+  mixins: [LoginContent],
+  components: {BlockModal},
   props: {
     username: {
       type: String,
       required: true,
     },
     showName: Boolean,
+    showBlock: Boolean,
+  },
+  data() {
+    return {
+      showBlockModal: false,
+    }
   },
   computed: {
     letter() {
@@ -41,6 +69,11 @@ export default {
       return color;
     },
   },
+  methods: {
+    hideBlockModal() {
+      this.showBlockModal = false;
+    },
+  },
 }
 </script>
 <style scoped>
@@ -57,5 +90,13 @@ export default {
   text-align: center;
   line-height: 56px;
   margin-right: 8px;
+}
+
+.profile-name {
+  flex-grow: 1;
+}
+
+.actions {
+  align-self: start;
 }
 </style>

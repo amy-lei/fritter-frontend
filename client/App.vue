@@ -47,7 +47,7 @@ body {
   display: flex;
   padding: 0;
   margin: 0;
-  font-size: 1.2em;
+  font-size: 16px;
 }
 
 main {
@@ -81,5 +81,26 @@ main {
 
 .alerts .success {
     background-color: rgb(45, 135, 87);
+}
+
+.toggle-btn {
+  border: none;
+  border: 1px solid transparent;
+  background-color: #e7e7e7;
+  font-family: inherit;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+.toggle-btn:hover {
+  border: 1px solid #b1b1b1;
+}
+
+.toggle-btn.selected {
+  border: 1px solid #6d6d6d;
+  background-color: #cdcdcd;
 }
 </style>

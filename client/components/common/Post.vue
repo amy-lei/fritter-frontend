@@ -10,6 +10,7 @@
       <ProfileComponent
         :username="post.author"
         :showName="true"
+        :showBlock="true"
       />
       <div
         v-if="$store.state.username === post.author"
@@ -36,21 +37,6 @@
         <button @click="deletePost">
           🗑️ Delete
         </button>
-      </div>
-      <div
-        v-else-if="isLoggedIn()"
-        class="actions"
-      >
-        <button
-          @click="showBlockModal = true"
-        >
-          🚩
-        </button>
-        <BlockModal
-          v-if="showBlockModal"
-          :username="post.author"
-          :hideModal="hideBlockModal"
-        />
       </div>
     </header>
     <textarea
@@ -83,12 +69,11 @@
   
 <script>
 import ProfileComponent from '@/components/common/Profile.vue';
-import BlockModal from '@/components/Block/BlockModal.vue';
 import LoginContent from '@/components/common/LoginContent.vue';
 
 export default {
   name: 'Post',
-  components: {ProfileComponent, BlockModal},
+  components: {ProfileComponent},
   mixins: [LoginContent],
   props: {
     // Data from the stored post
@@ -107,7 +92,6 @@ export default {
       editing: false, // Whether or not this freet is in edit mode
       draft: this.post.content, // Potentially-new content for this freet
       alerts: {}, // Displays success/error messages encountered during freet modification
-      showBlockModal: false,
       showContent: true,
     };
   },
@@ -166,12 +150,6 @@ export default {
       };
       this.request(params);
       this.editing = false;
-    },
-    blockUser() {
-      this.hideBlockModal();
-    },
-    hideBlockModal() {
-      this.showBlockModal = false;
     },
   }
 };
