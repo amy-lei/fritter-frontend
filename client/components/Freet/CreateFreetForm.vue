@@ -22,8 +22,12 @@ export default {
        * @param params.successCallback - Function to run if the the request succeeds
        * @param params.failureCallback - Function to run if the the request fails
        */
+      const options = {
+        ...params.options,
+        body: JSON.stringify(params.options.body),
+      };
       try {
-        const r = await fetch(`/api/freets`, params.options);
+        const r = await fetch(`/api/freets`, options);
         if (!r.ok) {
           const res = await r.json();
           throw new Error(res.error);

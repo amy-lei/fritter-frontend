@@ -14,18 +14,18 @@
         @input="content = $event.target.value"
       />
     </article>
-    <div v-if="enableVisibility">
-      <input
-        type="checkbox"
-        :checked="isPrivate"
-        @change="isPrivate = $event.target.checked"
-      />
-      <label>private</label>
-    </div>
     <div class="create-actions">
-      <slot>
-        <div class="create-metadata"></div> <!-- placeholder -->
-      </slot>
+      <div class="create-metadata">
+        <slot></slot>
+        <div v-if="enableVisibility">
+        <input
+          type="checkbox"
+          :checked="isPrivate"
+          @change="isPrivate = $event.target.checked"
+        />
+        <label>private</label>
+      </div>
+    </div>
       <button
         type="submit"
         class="primary-btn"
@@ -144,9 +144,11 @@
 
   .create-actions {
     display: flex;
+    align-items: center;
   }
   .create-metadata {
-    flex-grow:1;
+    margin-left: auto;
+    margin-right: 12px;
   }
   </style>
   

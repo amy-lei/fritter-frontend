@@ -2,8 +2,8 @@
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <BlockPanel :username="freet.author">
-    <article class="freet">
+  <BlockPanel :username="freet.author" class="freet">
+    <article>
       <Post
         :post="freet"
         :request="request"
@@ -136,5 +136,6 @@ export default {
 <style scoped>
 .freet {
   border: 1px solid black;
+  margin-bottom: 16px;
 }
 </style>

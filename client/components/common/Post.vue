@@ -117,11 +117,15 @@ export default {
        */
       const params = {
         method: 'DELETE',
-        callback: () => {
+        successCallback: () => {
           this.$store.commit('alert', {
             message: 'Successfully deleted!', status: 'success'
           });
-        }
+        },
+        failureCallback: (e) => {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        },
       };
       this.request(params);
     },
