@@ -22,11 +22,17 @@
       />
       <label>private</label>
     </div>
-    <button
-      type="submit"
-    >
-      {{ actionLabel }}
-    </button>
+    <div class="create-actions">
+      <slot>
+        <div class="create-metadata"></div> <!-- placeholder -->
+      </slot>
+      <button
+        type="submit"
+        class="primary-btn"
+      >
+        {{ actionLabel }}
+      </button>
+    </div>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"
@@ -134,6 +140,13 @@
     flex-grow: 1;
     padding: 8px;
     border: 0;
+  }
+
+  .create-actions {
+    display: flex;
+  }
+  .create-metadata {
+    flex-grow:1;
   }
   </style>
   

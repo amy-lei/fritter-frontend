@@ -84,23 +84,38 @@ main {
     background-color: rgb(45, 135, 87);
 }
 
-.toggle-btn {
+button {
   border: none;
   border: 1px solid transparent;
-  background-color: #ececec;
   font-family: inherit;
-  padding: 4px 8px;
+  padding: 8px 20px;
   border-radius: 100px;
   font-size: 16px;
-  cursor: pointer;
   transition: all 0.1s ease-in-out;
+  cursor: pointer;
 }
 
-.toggle-btn:hover {
+button.disabled {
+  cursor: default;
+}
+
+button:not(.disabled):hover {
   filter: brightness(90%);
+}
+
+.toggle-btn {
+  background-color: #ececec;
+  padding: 4px 8px;
 }
 
 .toggle-btn.selected {
   background-color: #cdcdcd;
 }
+
+.primary-btn {
+  background-color: #6c79d4;
+  color: white;
+  width: fit-content;
+}
+
 </style>

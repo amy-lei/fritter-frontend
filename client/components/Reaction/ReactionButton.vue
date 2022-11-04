@@ -1,16 +1,20 @@
 <template>
   <button
     class="toggle-btn reaction"
-    :class="{ selected: !!reactionId }"
+    :class="{ selected: !!reactionId, disabled: !isLoggedIn() }"
     @click="reactionId ? unreact() : react()"
     >
     <p class="emoji">{{ emoji }}</p>
     <p class="count">{{ count || 0 }}</p>
   </button>
 </template>
+
 <script>
+import LoginContent from '@/components/common/LoginContent.vue';
+
 export default {
   name: 'ReactionComponent',
+  mixins: [LoginContent],
   props: {
     reactType: {
       type: String,
@@ -44,6 +48,24 @@ export default {
     }
   },
   methods: {
+    async request(url, options) {
+      if (!this.$store.state.username) {
+        return;
+      }
+      try {
+        const r = await fetch(url, options);
+        if (!r.ok) {
+          const res = await r.json();
+          throw new Error(res.error);
+        }
+        this.$store.commit('refreshReacts', this.freetId);
+      } catch (e) {
+        this.$store.commit('alert', {
+          message: e,
+          status: 'error'
+        });
+      }
+    },
     async react() {
       const body = {
         type: this.reactType,
@@ -54,39 +76,14 @@ export default {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(body),
       };
-      try {
-        const r = await fetch('/api/reactions', options);
-        if (!r.ok) {
-          const res = await r.json();
-          throw new Error(res.error);
-        }
-        this.$store.commit('refreshReacts', this.freetId);
-      } catch (e) {
-        this.$store.commit('alert', {
-          message: `Failed to react to freet: ${e}`,
-          status: 'error'
-        });
-      }
-
+      this.request('/api/reactions', options);
     },
     async unreact() {
       const url = `/api/reactions/${this.reactionId}`;
       const options = {
         method: 'DELETE',
       };
-      try {
-        const r = await fetch(url, options);
-        if (!r.ok) {
-          const res = await r.json();
-          throw new Error(res.error);
-        }
-        this.$store.commit('refreshReacts', this.freetId);
-      } catch (e) {
-        this.$store.commit('alert', {
-          message: `Failed to unreact to freet: ${e}`,
-          status: 'error'
-        });
-      }
+      this.request(url, options);
     },
   }
 }
