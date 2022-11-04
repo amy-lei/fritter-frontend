@@ -43,7 +43,7 @@ class ReactionCollection {
    * @return {Promise<HydratedDocument<Reaction>[]>} - An array of all of the reactions
    */
   static async findAllByFreetId(freetId: Types.ObjectId | string): Promise<Array<HydratedDocument<Reaction>>> {
-    return ReactionModel.find({source: freetId}).populate('source');
+    return ReactionModel.find({source: freetId}).populate('issuerId');
   }
 
   /**
@@ -78,7 +78,7 @@ class ReactionCollection {
     const reaction = await ReactionModel.findOne({_id: reactionId});
     reaction.type = type;
     await reaction.save();
-    return reaction.populate('source');
+    return reaction.populate('issuerId');
   }
 
   /**

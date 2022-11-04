@@ -8,7 +8,9 @@
         :post="freet"
         :request="request"
         :isPrivate="false"
-      />
+      >
+        <ReactionBar :freetId="freet._id"/>
+      </Post>
       <div>
         <div>
           <button
@@ -52,14 +54,15 @@
 <script>
 
 import Post from '@/components/common/Post.vue';
+import LoginContent from '@/components/common/LoginContent.vue';
+import BlockPanel from '@/components/Block/BlockPanel.vue';
 import CommentThread from '@/components/Comment/CommentThread.vue';
 import CreateCommentForm from '@/components/Comment/CreateCommentForm.vue';
-import BlockPanel from '@/components/Block/BlockPanel.vue';
-import LoginContent from '@/components/common/LoginContent.vue';
+import ReactionBar from '@/components/Reaction/ReactionBar.vue';
 
 export default {
   name: 'FreetComponent',
-  components: {Post, CommentThread, CreateCommentForm, BlockPanel},
+  components: {Post, CommentThread, CreateCommentForm, BlockPanel, ReactionBar},
   mixins: [LoginContent],
   props: {
     // Data from the stored freet

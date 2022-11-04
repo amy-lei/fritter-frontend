@@ -55,6 +55,7 @@
       Posted at {{ post.dateModified }}
       <i v-if="post.edited">(edited)</i>
     </p>
+    <slot></slot>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"

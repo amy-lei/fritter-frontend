@@ -16,6 +16,7 @@ const store = new Vuex.Store({
     username: null, // Username of the logged in user
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     blockedUsers: {},
+    reactions: {},
   },
   mutations: {
     alert(state, payload) {
@@ -96,7 +97,15 @@ const store = new Vuex.Store({
       const blocks = await res.json();
       state.blockedUsers = {};
       blocks.forEach(block => Vue.set(state.blockedUsers, block.blockee, block._id));
-    }
+    },
+    async refreshReacts(state, freetId) {
+      /**
+       * Request the server for the reactions for the freet with id freetId 
+       */
+       const res = await fetch(`/api/reactions?freetId=${freetId}`);
+       const reactions = await res.json();
+       Vue.set(state.reactions, freetId, reactions);
+    },
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]

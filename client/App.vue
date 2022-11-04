@@ -51,7 +51,8 @@ body {
 }
 
 main {
-  padding: 0 5em 5em;
+  max-width: 600px;
+  margin: auto;
 }
 
 .alerts {
@@ -86,21 +87,20 @@ main {
 .toggle-btn {
   border: none;
   border: 1px solid transparent;
-  background-color: #e7e7e7;
+  background-color: #ececec;
   font-family: inherit;
   padding: 4px 8px;
-  border-radius: 8px;
+  border-radius: 100px;
   font-size: 16px;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
 }
 
 .toggle-btn:hover {
-  border: 1px solid #b1b1b1;
+  filter: brightness(90%);
 }
 
 .toggle-btn.selected {
-  border: 1px solid #6d6d6d;
   background-color: #cdcdcd;
 }
 </style>
