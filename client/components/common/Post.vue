@@ -55,7 +55,32 @@
       Posted at {{ post.dateModified }}
       <i v-if="post.edited">(edited)</i>
     </p>
-    <slot></slot>
+    <template v-if="tags">
+      <hr/>
+      <TagComponent
+        v-for="(tag, i) in tags"
+        :tag="editedTags[tag._id] || tag.label"
+        :editing="editing"
+        :updateTag="(value) => updateTag(tag._id, i, value)"
+        :deleteTag="() => deleteTag(tag._id)"
+      />
+      <template v-if="editing">
+        <TagComponent
+          v-for="(tag, i) in newTags"
+          :tag="tag"
+          :editing="true"
+          :updateTag="(value) => updateNewTag(i, value)"
+          :deleteTag="() => deleteNewTag(i)"
+        />
+        <button
+          class="text-btn"
+          @click="$event.preventDefault(); addTag()"
+        >
+          + Add tags
+        </button>
+      </template>
+    </template>
+    <slot name="reactions"></slot>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"
@@ -71,10 +96,11 @@
 <script>
 import ProfileComponent from '@/components/common/Profile.vue';
 import LoginContent from '@/components/common/LoginContent.vue';
+import TagComponent from '@/components/Tag/TagComponent.vue'
 
 export default {
   name: 'Post',
-  components: {ProfileComponent},
+  components: {ProfileComponent, TagComponent},
   mixins: [LoginContent],
   props: {
     // Data from the stored post
@@ -94,7 +120,21 @@ export default {
       draft: this.post.content, // Potentially-new content for this freet
       alerts: {}, // Displays success/error messages encountered during freet modification
       showContent: true,
+      editedTags: {},
+      newTags: [],
     };
+  },
+  computed: {
+    tags() {
+      const tags = this.$store.state.tags[this.post._id];
+      if (!tags) {
+        return tags;
+      }
+      return tags.filter(tag => {
+        const id = tag._id;
+        return !(id in this.editedTags) ||  this.editedTags[id] !== null;
+      });
+    }
   },
   methods: {
     startEditing() {
@@ -110,6 +150,8 @@ export default {
        */
       this.editing = false;
       this.draft = this.post.content;
+      this.editedTags = {};
+      this.newTags = [];
     },
     deletePost() {
       /**
@@ -129,32 +171,131 @@ export default {
       };
       this.request(params);
     },
-    submitEdit() {
+    async submitEdit() {
       /**
        * Updates post to have the submitted draft content.
        */
-      if (this.post.content === this.draft) {
-        const error = 'Error: Edited content should be different than current content.';
+      const contentUnchanged = this.post.content === this.draft;
+      const tagUnchanged = Object.keys(this.editedTags).length === 0;
+      const newTags = this.newTags.length > 0;
+      if (contentUnchanged && tagUnchanged && !newTags) {
+        const error = 'Error: Edited tags/content should be different than current tags/content';
         this.$set(this.alerts, error, 'error'); // Set an alert to be the error text, timeout of 3000 ms
         setTimeout(() => this.$delete(this.alerts, error), 3000);
         return;
       }
 
-      const params = {
-        method: 'PATCH',
-        message: 'Successfully edited content!',
-        body: JSON.stringify({content: this.draft}),
-        successCallback: () => {
-          this.$set(this.alerts, params.message, 'success');
-          setTimeout(() => this.$delete(this.alerts, params.message), 3000);
-        },
-        failureCallback: (e) => {
+      // Check content on the FE rather than the BE so that partial changes aren't made.
+      const MIN_LEN = 1;
+      const MAX_LEN = 15;
+      const tagContents = [
+        ...Object.values(this.editedTags),
+        ...this.newTags,
+      ];
+      const invalidTagLengths = tagContents.some(
+          val => val !== null && (val.length < MIN_LEN || val.length > MAX_LEN));
+      if (invalidTagLengths) {
+        const error = `Error: Tags must be between ${MIN_LEN} and ${MAX_LEN} characters long.`;
+        this.$set(this.alerts, error, 'error');
+        setTimeout(() => this.$delete(this.alerts, error), 3000);
+        return;
+      }
+      const invalidTagValues = tagContents.some(
+          val => val && val.match(/[^0-9a-z]/i));
+      if (invalidTagValues) {
+        const error = 'Error: Tags can only contain alphanumeric characters';
+        this.$set(this.alerts, error, 'error');
+        setTimeout(() => this.$delete(this.alerts, error), 3000);
+        return;
+      }
+      const duplicateLabels = tagContents.length !== new Set(tagContents).size;
+      if (duplicateLabels) {
+        const error = 'Error: Posts cannot be tagged with the duplicate labels';
+        this.$set(this.alerts, error, 'error');
+        setTimeout(() => this.$delete(this.alerts, error), 3000);
+        return;
+      }
+
+      if (!contentUnchanged) {
+        const params = {
+          method: 'PATCH',
+          message: 'Successfully edited content!',
+          body: JSON.stringify({content: this.draft}),
+          successCallback: () => {
+            this.$set(this.alerts, params.message, 'success');
+            setTimeout(() => this.$delete(this.alerts, params.message), 3000);
+          },
+          failureCallback: (e) => {
+            this.$set(this.alerts, e.message, 'error');
+            setTimeout(() => this.$delete(this.alerts, e), 3000);
+          },
+        };
+        this.request(params);
+      }
+      if (!tagUnchanged || newTags) {
+        try {
+          await Promise.all([this.saveTagEdits(), this.createTags()]);
+          this.$store.commit('refreshTags', this.post._id);
+          this.editedTags = {};
+          this.newTags = [];
+        } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
-        },
-      };
-      this.request(params);
+        }
+      }
+      if (newTags) {
+        this.createTags();
+      }
       this.editing = false;
+    },
+    addTag() {
+      this.newTags.push('');
+    },
+    updateNewTag(i, value) {
+      this.newTags[i] = value;
+    },
+    deleteNewTag(i) {
+      this.$delete(this.newTags, i);
+    },
+    async deleteTag(tagId) {
+      this.$set(this.editedTags, tagId, null);
+    },
+    async updateTag(tagId, idx, value) {
+      if (value === this.tags[idx].label) {
+        this.$delete(this.editedTags, tagId);
+        return;
+      }
+      this.$set(this.editedTags, tagId, value);
+    },
+    async saveTagEdits() {
+      return Promise.all(Object.keys(this.editedTags).map(async (tagId) => {
+        const options = {
+          headers: {'Content-Type': 'application/json'}
+        };
+        if (this.editedTags[tagId] === null) {
+          options.method = 'DELETE';
+        } else {
+          options.method = 'PATCH';
+          options.body = JSON.stringify({
+            label: this.editedTags[tagId],
+          });
+        }
+        return fetch(`/api/tags/${tagId}`, options);
+      }));
+    },
+    async createTags() {
+      return Promise.all(this.newTags.map(tag => {
+        const options = {
+          method: 'POST', 
+          headers: {'Content-Type': 'application/json'},
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            source: this.post._id,
+            label: tag,
+          }),
+        };
+        return fetch('/api/tags', options);
+      }));
     },
   }
 };

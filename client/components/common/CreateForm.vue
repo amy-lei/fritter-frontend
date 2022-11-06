@@ -7,24 +7,27 @@
       <ProfileComponent
         :username="$store.state.username"
       />
-      <textarea
-        :name="content"
-        :value="content"
-        :placeholder="placeholder"
-        @input="content = $event.target.value"
-      />
+      <div class="post-body">
+        <textarea
+          :name="content"
+          :value="content"
+          :placeholder="placeholder"
+          @input="content = $event.target.value"
+        />
+        <slot name="tags"></slot>
+      </div>
     </article>
     <div class="create-actions">
       <div class="create-metadata">
-        <slot></slot>
         <div v-if="enableVisibility">
-        <input
-          type="checkbox"
-          :checked="isPrivate"
-          @change="isPrivate = $event.target.checked"
-        />
-        <label>private</label>
-      </div>
+          <input
+            type="checkbox"
+            :checked="isPrivate"
+            @change="isPrivate = $event.target.checked"
+          />
+          <label>private</label>
+        </div>
+        <slot name="add"></slot>
     </div>
       <button
         type="submit"
@@ -59,6 +62,7 @@
         required: true,
       },
       enableVisibility: Boolean,
+      enableTags: Boolean,
       body: Object, // Additional metadata for request body
     },
     data() {
@@ -101,7 +105,7 @@
           }
         };
         this.request(params);
-      }
+      },
     }
   };
   </script>
@@ -118,7 +122,7 @@
 
   form > article {
     display: flex;
-  
+    align-items: flex-start;
   }
 
   form > article p {
@@ -137,9 +141,13 @@
   textarea {
     font-family: inherit;
     font-size: inherit;
-    flex-grow: 1;
     padding: 8px;
     border: 0;
+    width: 100%;
+  }
+  
+  .post-body {
+    flex-grow: 1;
   }
 
   .create-actions {
@@ -150,5 +158,6 @@
     margin-left: auto;
     margin-right: 12px;
   }
+
   </style>
   

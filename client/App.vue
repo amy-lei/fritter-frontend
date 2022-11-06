@@ -118,4 +118,15 @@ button:not(.disabled):hover {
   width: fit-content;
 }
 
+.text-btn {
+  padding: 4px 0;
+  background: none;
+  border-radius: 0;
+  transition: all 0.1s ease-in-out;
+}
+.text-btn:hover {
+  background: none;
+  opacity: 70%;
+}
+
 </style>

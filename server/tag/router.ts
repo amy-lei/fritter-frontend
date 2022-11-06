@@ -31,7 +31,7 @@ router.get(
 /**
  * Add a new tag.
  *
- * @name POST /api/tag
+ * @name POST /api/tags
  *
  * @param {string} source - The id of the item to be tagging
  * @param {string} label - The text of the freet
@@ -41,7 +41,7 @@ router.get(
  * @throws {400} - If the tag already exists
  * @throws {400} - If no source was given
  * @throws {404} - If no item has the specified ID
- * @throws {413} - If the tag label is more than 25 characters long
+ * @throws {413} - If the tag label is more than 15 characters long
  */
 router.post(
   '/',
@@ -57,6 +57,35 @@ router.post(
     res.status(201).json({
       message: 'Your tag was created successfully.',
       freet: util.constructTagResponse(freet)
+    });
+  }
+);
+
+/**
+ * Edit a tag
+ *
+ * @name PATCH /api/tags/:id
+ *
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in or is not the author of
+ *                 the tag
+ * @throws {404} - If the tagId is not valid
+ * @throws {400} - If the tag content is empty or a stream of empty spaces
+ * @throws {413} - If the tag content is more than 15 characters long
+ */
+router.patch(
+  '/:tagId?',
+  [
+    userValidator.isUserLoggedIn,
+    tagValidator.isValidModifier,
+    tagValidator.isTagExist,
+    tagValidator.isValidLabel,
+  ],
+  async (req: Request, res: Response) => {
+    const tag = await TagCollection.updateOne(req.params.tagId, req.body.label);
+    res.status(200).json({
+      message: 'Your tag was updated successfully.',
+      tag: util.constructTagResponse(tag),
     });
   }
 );

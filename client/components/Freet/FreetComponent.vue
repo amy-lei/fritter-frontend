@@ -9,7 +9,11 @@
         :request="request"
         :isPrivate="false"
       >
-        <ReactionBar :freetId="freet._id"/>
+        <template #reactions>
+          <hr/>
+          <ReactionBar :freetId="freet._id"/>
+        </template>
+
       </Post>
       <div>
         <div>
@@ -83,6 +87,7 @@ export default {
       visibility: 'all',
     });
     this.$store.commit('refreshComments', this.freet._id);
+    this.$store.commit('refreshTags', this.freet._id);
   },
   computed: {
     comments() {

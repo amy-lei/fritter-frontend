@@ -38,6 +38,19 @@ class TagCollection {
   }
 
   /**
+   * Find a tag by tagId
+   *
+   * @param {string} tagid - The id of the tag to find
+   * @return {Promise<HydratedDocument<Tag>> | Promise<null> } - The tag with the given tagid, if any
+   */
+  static async updateOne(tagId: Types.ObjectId | string, label: string): Promise<HydratedDocument<Tag>> {
+    const tag =  await TagModel.findOne({_id: tagId});
+    tag.label = label;
+    await tag.save();
+    return tag;
+  }
+
+  /**
    * Find a tag by source and label
    *
    * @param {string} source - The id of the content being tagged

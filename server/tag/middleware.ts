@@ -112,7 +112,7 @@ const isValidLabel = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  if (label.length > 25) {
+  if (label.length > 15) {
     res.status(413).json({
       error: 'Tag label must be no more than 25 characters.'
     });
