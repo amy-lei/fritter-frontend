@@ -2,19 +2,30 @@
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <BlockPanel :username="comment.author">
+  <BlockPanel
+    :username="comment.author"
+    :class="{isPrivate: comment.isPrivate}"
+  >
     <Post
       :post="comment"
       :request="request"
       :isPrivate="comment.isPrivate"
-    />
-    <button @click="showForm = true" class="reply-btn">Reply</button>
-    <div v-if="showForm" class="reply-form">
+    >
+    <template #actions>
+      <button @click="showForm = true" class="text-btn reply-btn">+ Reply</button>
+    </template>
+    </Post>
+
+    <div
+      v-if="showForm"
+      class="reply-form"
+      :class="{isPrivate: comment.isPrivate}"  
+    >
       <CreateCommentForm
         :freetId="comment.parentFreet"
         :commentId="comment._id"
         />
-      <button @click="showForm = false">X</button>
+      <button class="slim" @click="showForm = false">X</button>
     </div>
   </BlockPanel>
 </template>
@@ -65,10 +76,11 @@ export default {
 
         this.$store.commit('refreshComments', this.comment.parentFreet);
         params.successCallback();
+        this.showForm = false;
       } catch (e) {
         params.failureCallback(e);
-
       }
+
     }
   }
 };
@@ -77,8 +89,13 @@ export default {
 <style scoped>
 .reply-form {
   display: flex;
+  align-items: flex-start;
 }
 .reply-form > :first-child {
   flex-grow: 1;
+}
+
+.reply-form button {
+  margin: 8px;
 }
 </style>

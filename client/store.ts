@@ -120,6 +120,10 @@ const store = new Vuex.Store({
        * Request the server for the reactions for the freet with id freetId 
        */
        const res = await fetch(`/api/reactions?freetId=${freetId}`);
+       if (!res.ok) {
+        Vue.delete(state.reactions, freetId);
+        return;
+       }
        const reactions = await res.json();
        const reactionTypes = [
         'LOVE',

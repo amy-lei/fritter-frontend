@@ -52,7 +52,7 @@
           :class="{ selected: post.author in $store.state.blockedUsers }"
           @click="showBlockModal = true"
         >
-          🚫
+          🚫 {{ post.author in $store.state.blockedUsers ? 'Unblock': 'Block' }}
         </button>
         <BlockModal
           v-if="showBlockModal"
@@ -77,6 +77,7 @@
       Posted at {{ post.dateModified }}
       <i v-if="post.dateModified !== post.dateCreated">(edited)</i>
     </p>
+    <slot name="actions"></slot>
     <div v-if="tags">
       <TagComponent
         v-for="(tag, i) in tags"
@@ -336,9 +337,6 @@ export default {
   padding: 20px;
   position: relative;
 }
-.post.isPrivate {
-  background-color: #e0e0e5;
-}
 
 .post header {
   display: flex;
@@ -359,5 +357,6 @@ textarea {
   padding: 8px;
   border: 0;
   width: 100%;
+  background:transparent;
 }
 </style>

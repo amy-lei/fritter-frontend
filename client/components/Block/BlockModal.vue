@@ -13,8 +13,8 @@
         Content created by @{{ username }} will not longer be collapsed on default.
       </p>
       <div class="modal-actions">
-        <button @click="hideModal">Cancel</button>
-        <button @click="unblock">Unblock</button>
+        <button class="text-btn" @click="hideModal">Cancel</button>
+        <button class="primary-btn" @click="unblock">Unblock</button>
       </div>
     </div>
     <div
@@ -29,8 +29,8 @@
         </p>
       </div>
       <div class="modal-actions">
-        <button @click="hideModal">Cancel</button>
-        <button @click="block">Block</button>
+        <button class="text-btn" @click="hideModal">Cancel</button>
+        <button class="primary-btn" @click="block">Block</button>
       </div>
     </div>
   </div>
@@ -118,5 +118,10 @@ export default {
   background-color: #fff;
   border-radius: 8px;
   z-index: 9999;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

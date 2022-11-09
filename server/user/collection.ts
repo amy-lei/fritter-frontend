@@ -1,6 +1,8 @@
 import type {HydratedDocument, Types} from 'mongoose';
 import type {User} from './model';
 import UserModel from './model';
+import CommentCollection from '../comment/collection';
+import FreetCollection from '../freet/collection';
 
 /**
  * This file contains a class with functionality to interact with users stored
@@ -89,6 +91,8 @@ class UserCollection {
    */
   static async deleteOne(userId: Types.ObjectId | string): Promise<boolean> {
     const user = await UserModel.deleteOne({_id: userId});
+    await FreetCollection.deleteMany(userId);
+    await CommentCollection.deleteMany(userId);
     return user !== null;
   }
 }

@@ -11,17 +11,22 @@
       </h1>
     </div>
     <div class="right">
-      <router-link to="/">
+      <router-link to="/" class="text-btn">
         Home
       </router-link>
       <router-link
         v-if="$store.state.username"
+        class="edit-profile"
         to="/account"
       >
-        Account
+        <ProfileComponent
+          class="edit-profile-btn"
+          :username="$store.state.username"
+        />
       </router-link>
       <router-link
         v-else
+        class="text-btn"
         to="/login"
       >
         Login
@@ -39,10 +44,19 @@
   </nav>
 </template>
 
+<script>
+import ProfileComponent from '@/components/common/Profile.vue';
+export default {
+  name: 'NavBar',
+  components: {ProfileComponent}
+}
+</script>
+
+
 <style scoped>
 nav {
     padding: 1vw 2vw;
-    background-color: #ccc;
+    background-color: #ccd1f3;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -64,18 +78,25 @@ img {
 }
 
 .right {
-    font-size: 20px;
-    display: grid;
-    gap: 16px;
-    grid-auto-flow: column;
-    align-items: center;
+  font-size: 16px;
+  display: grid;
+  gap: 16px;
+  grid-auto-flow: column;
+  align-items: center;
 }
 
+.right a ~ a {
+  margin-left: 4px;
+}
 .right a {
-    margin-left: 5px;
+  text-decoration: none;
+}
+
+.right .edit-profile {
+  transform: scale(0.85);
 }
 
 .alerts {
-    width: 25%;
+  width: 25%;
 }
 </style>

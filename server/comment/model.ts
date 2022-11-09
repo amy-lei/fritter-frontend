@@ -79,6 +79,5 @@ CommentSchema.virtual('replies', {
   foreignField: 'parentComment',
 });
 
-
 const CommentModel = model<Comment>('Comment', CommentSchema);
 export default CommentModel;

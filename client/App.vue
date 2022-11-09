@@ -133,4 +133,13 @@ button.slim,
   opacity: 70%;
 }
 
+.isPrivate {
+  background: repeating-linear-gradient(
+    -45deg,
+    #fff,
+    #fff 12px,
+    #f7f7f7 12px,
+    #f7f7f7 24px
+  );
+}
 </style>

@@ -143,6 +143,7 @@
     padding: 8px;
     border: 0;
     width: 100%;
+    background: transparent;
   }
   
   .post-body {

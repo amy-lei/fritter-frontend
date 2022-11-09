@@ -47,9 +47,8 @@ export default {
 
 <style scoped>
 .panel {
-  border: 1px solid #111;
   font-style: italic;
-  padding: 20px;
+  padding: 28px 20px;
   position: relative;
   cursor: pointer;
 }

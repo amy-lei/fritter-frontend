@@ -22,7 +22,7 @@ const constructReactionResponse = (reaction: HydratedDocument<Reaction>): Reacti
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  const {username} = reactionCopy.issuerId;
+  const username = reactionCopy?.issuerId?.username;
   delete reactionCopy.issuerId;
   return {
     ...reactionCopy,

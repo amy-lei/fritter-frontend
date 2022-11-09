@@ -100,6 +100,15 @@ class ReactionCollection {
   static async deleteMany(freetId: Types.ObjectId | string): Promise<void> {
     await ReactionModel.deleteMany({source: freetId});
   }
+
+  /**
+   * Delete all the reactions in a given freet
+   *
+   * @param {string} issuerId - The id freets to delete reactions from
+   */
+  static async deleteManyByAuthor(issuerId: Types.ObjectId | string): Promise<void> {
+    await ReactionModel.deleteMany({issuerId});
+  }
 }
 
 export default ReactionCollection;

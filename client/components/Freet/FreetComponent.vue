@@ -49,6 +49,7 @@
       </div>
       <CommentThread
         v-if="showComments"
+        class="thread"
         :freetId="freet._id"
         :comments="comments"
       />
@@ -170,4 +171,5 @@ export default {
 .thread-filter > select {
   border-radius: 100px;
 }
+
 </style>

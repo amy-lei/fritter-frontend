@@ -63,8 +63,15 @@ class CommentCollection {
         conditions.push({parentFreet, isPrivate: true, parentComment: {$exists: false}, authorId: {$exists: true}});
     }
     return CommentModel.find({$or: conditions})
-      .populate(['authorId', 'replies'])
-      .populate({path:'replies', populate: [{path:'replies'},{path: 'authorId'}]});
+    .populate(['authorId', 'replies'])
+    .populate({path:'replies', populate: [
+      {path:'replies', populate: [
+        {path: 'replies', populate: [
+          {path: 'replies'}, {path: 'authorId'}, 
+        ]}, {path:'authorId', model: 'User'}
+      ]},
+      {path:'authorId',model: 'User'},
+    ]});
   }
 
   /**
@@ -87,7 +94,14 @@ class CommentCollection {
     }
     return CommentModel.find({$or: conditions})
       .populate(['authorId', 'replies'])
-      .populate({path:'replies', populate: [{path:'replies'},{path: 'authorId'}]});
+      .populate({path:'replies', populate: [
+        {path:'replies', populate: [
+          {path: 'replies', populate: [
+            {path: 'replies'}, {path: 'authorId'}, 
+          ]}, {path:'authorId', model: 'User'}
+        ]},
+        {path:'authorId',model: 'User'},
+      ]});
   }
 
   /**
@@ -116,6 +130,10 @@ class CommentCollection {
   static async deleteOne(commentId: Types.ObjectId | string): Promise<boolean> {
     const comment = await CommentModel.deleteOne({_id: commentId});
     return comment !== null;
+  }
+
+  static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
+    await CommentModel.deleteMany({authorId});
   }
 }
 
