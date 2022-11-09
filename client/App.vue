@@ -103,9 +103,13 @@ button:not(.disabled):hover {
   filter: brightness(90%);
 }
 
+button.slim,
+.toggle-btn {
+  padding: 4px 8px;
+}
+
 .toggle-btn {
   background-color: #ececec;
-  padding: 4px 8px;
 }
 
 .toggle-btn.selected {

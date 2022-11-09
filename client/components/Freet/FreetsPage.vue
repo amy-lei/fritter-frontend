@@ -22,7 +22,7 @@
       </article>
     </section>
     <section>
-      <header>
+      <header class="filters">
         <SelectedFilter
           v-for="(filter, i) in $store.state.filters"
           :filterObj="filter"
@@ -119,5 +119,9 @@ section .scrollbox {
   flex: 1 0 50vh;
   padding: 3%;
   overflow-y: scroll;
+}
+
+.filters {
+  margin: 16px 0;
 }
 </style>

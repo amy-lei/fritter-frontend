@@ -9,23 +9,6 @@
     <h4 v-if="showName" class="profile-name">
       @{{ username }}
     </h4>
-    <div
-      v-if="isLoggedIn() && !isSameUser(username)"
-      class="actions"
-    >
-      <button
-        class="toggle-btn"
-        :class="{ selected: username in $store.state.blockedUsers }"
-        @click="showBlockModal = true"
-      >
-        🚫
-      </button>
-      <BlockModal
-        v-if="showBlockModal"
-        :username="username"
-        :hideModal="hideBlockModal"
-      />
-    </div>
   </div>
 </template>
 
@@ -52,14 +35,15 @@ export default {
   },
   computed: {
     letter() {
-        return this.username.toUpperCase().charAt(0);
+        return this.username?.toUpperCase()?.charAt(0) || ' ';
     },
     color() {
       // Source for string to hex color code snippet:
       // https://stackoverflow.com/a/16348977
       let hash = 0;
-      for (let i = 0; i < this.username.length; i++) {
-          hash = this.username.charCodeAt(i) + ((hash << 5) - hash);
+      const username = this.username || '';
+      for (let i = 0; i < username.length; i++) {
+          hash = username.charCodeAt(i) + ((hash << 5) - hash);
       }
       let color = '#';
       for (let i = 0; i < 3; i++) {

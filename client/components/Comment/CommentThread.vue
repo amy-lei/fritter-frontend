@@ -1,7 +1,7 @@
 <template>
   <article class="thread">
     <div
-      v-for="comment in comments"
+      v-for="(comment, i) in comments"
       :key="comment.id"
     >
       <CommentComponent
@@ -35,7 +35,21 @@ export default {
 </script>
 
 <style scoped>
-.thread {
+.thread .thread {
   margin-left: 24px;
+  border-left: 1px solid #000;
 }
+.comment-border-link {
+    display: block;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 12px;
+    height: calc(100% - 50px);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    background-color: rgba(0, 0, 0, 0.1);
+    background-clip: padding-box;
+}
+
 </style>

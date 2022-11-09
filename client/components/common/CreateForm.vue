@@ -112,7 +112,6 @@
   
   <style scoped>
   form {
-    border: 1px solid #111;
     padding: 20px;
     display: flex;
     flex-direction: column;

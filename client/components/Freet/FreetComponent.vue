@@ -10,11 +10,12 @@
         :isPrivate="false"
       >
         <template #reactions>
-          <hr/>
+          <hr class="reaction-divider"/>
           <ReactionBar :freetId="freet._id"/>
         </template>
 
       </Post>
+      <hr class="comment-divider"/>
       <div class="comment-actions">
         <button
           class="text-btn"
@@ -25,22 +26,26 @@
         </button>
       </div>
       <div v-if="showComments">
-        <template v-if="isLoggedIn() && comments.length > 0">
-          <label for="visibility">Filter for:</label>
-          <select
-            name="visibility"
-            :value="visibility"
-            @change="onChange($event.target.value)"
-          >
-            <option value="all">All</option>
-            <option value="public">Public</option>
-            <option value="private">Private</option>
-          </select>
-        </template>
+        <hr class="comment-divider"/>
         <CreateCommentForm
           v-if="showComments"
           :freetId="freet._id"
         />
+      </div>
+      <div
+        v-if="showComments && isLoggedIn() && comments.length > 0"
+        class="thread-filter"
+      >
+        <label for="visibility">Filter for:&nbsp;</label>
+        <select
+          name="visibility"
+          :value="visibility"
+          @change="onChange($event.target.value)"
+        >
+          <option value="all">All</option>
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
       </div>
       <CommentThread
         v-if="showComments"
@@ -137,15 +142,32 @@ export default {
 </script>
 <style scoped>
 .freet {
-  border: 1px solid black;
+  border: 1px solid #555555;
+  border-radius: 8px;
   margin-bottom: 16px;
 }
 
+.reaction-divider {
+  margin-bottom: 16px;
+}
 .comment-actions {
   display: flex;
   padding: 8px 0;
 }
 .comment-actions > button {
   margin: auto;
+}
+.comment-divider {
+  margin: 0 16px;
+}
+.thread-filter {
+  border-top: 1px solid #555555;
+  border-bottom: 1px solid #555555;
+  padding: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+.thread-filter > select {
+  border-radius: 100px;
 }
 </style>

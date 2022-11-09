@@ -84,7 +84,7 @@ export default {
   list-style: none;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0,0,0,.15);
+  border: 1px solid #555555;
   border-radius: 0.25rem;
 } 
 .dropdown-item {

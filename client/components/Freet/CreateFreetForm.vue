@@ -2,6 +2,7 @@
 
 <template>
   <CreateForm
+    class="create-freet"
     :placeholder="'What\'s happening'"
     :actionLabel="'Freet'"
     :request="request"
@@ -98,3 +99,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.create-freet {
+  border: 1px solid #555555;
+  border-radius: 8px;
+}
+</style>

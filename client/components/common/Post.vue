@@ -10,7 +10,6 @@
       <ProfileComponent
         :username="post.author"
         :showName="true"
-        :showBlock="true"
       />
       <div
         v-if="$store.state.username === post.author"
@@ -18,26 +17,49 @@
       >
         <button
           v-if="editing"
+          class="slim"
           @click="submitEdit"
         >
-          ✅ Save changes
+          ✅ Save
         </button>
         <button
           v-if="editing"
+          class="slim"
           @click="stopEditing"
         >
-          🚫 Discard changes
+          🚫 Discard
         </button>
         <button
           v-if="!editing"
+          class="slim"
           @click="startEditing"
         >
-          ✏️ Edit
+          ✏️
         </button>
-        <button @click="deletePost">
-          🗑️ Delete
+        <button
+          class="slim"
+          @click="deletePost"
+        >
+          🗑️
         </button>
       </div>
+      <div
+        v-else-if="isLoggedIn()"
+        class="actions"
+      >
+        <button
+          class="toggle-btn"
+          :class="{ selected: post.author in $store.state.blockedUsers }"
+          @click="showBlockModal = true"
+        >
+          🚫
+        </button>
+        <BlockModal
+          v-if="showBlockModal"
+          :username="post.author"
+          :hideModal="hideBlockModal"
+        />
+        </div>
     </header>
     <textarea
       v-if="editing"
@@ -53,7 +75,7 @@
     </p>
     <p class="info">
       Posted at {{ post.dateModified }}
-      <i v-if="post.edited">(edited)</i>
+      <i v-if="post.dateModified !== post.dateCreated">(edited)</i>
     </p>
     <div v-if="tags">
       <TagComponent
@@ -96,10 +118,11 @@
 import ProfileComponent from '@/components/common/Profile.vue';
 import LoginContent from '@/components/common/LoginContent.vue';
 import TagComponent from '@/components/Tag/TagComponent.vue'
+import BlockModal from '@/components/Block/BlockModal.vue';
 
 export default {
   name: 'Post',
-  components: {ProfileComponent, TagComponent},
+  components: {BlockModal, ProfileComponent, TagComponent},
   mixins: [LoginContent],
   props: {
     // Data from the stored post
@@ -121,6 +144,7 @@ export default {
       showContent: true,
       editedTags: {},
       newTags: [],
+      showBlockModal: false,
     };
   },
   computed: {
@@ -136,6 +160,9 @@ export default {
     }
   },
   methods: {
+    hideBlockModal() {
+      this.showBlockModal = false;
+    },
     startEditing() {
       /**
        * Enables edit mode on this freet.
@@ -306,11 +333,31 @@ export default {
   box-sizing: border-box;
 }
 .post {
-  border: 1px solid #111;
   padding: 20px;
   position: relative;
 }
 .post.isPrivate {
   background-color: #e0e0e5;
+}
+
+.post header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.post .info {
+  font-size: 14px;
+  font-style: italic;
+  color: #555;
+}
+header .actions button + button {
+ margin-left: 4px;
+}
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  padding: 8px;
+  border: 0;
+  width: 100%;
 }
 </style>
