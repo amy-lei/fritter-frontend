@@ -15,34 +15,30 @@
         </template>
 
       </Post>
-      <div>
-        <div>
-          <button
-            v-if="showComments"
-            @click="showComments = false"
+      <div class="comment-actions">
+        <button
+          class="text-btn"
+          @click="showComments = !showComments"
           >
-            Hide comments
-          </button>
-          <button
-            v-else
-            @click="showComments = true"
+          {{ comments.length }} thread(s)
+          <ExpandIcon :active="showComments"/>
+        </button>
+      </div>
+      <div v-if="showComments">
+        <template v-if="isLoggedIn() && comments.length > 0">
+          <label for="visibility">Filter for:</label>
+          <select
+            name="visibility"
+            :value="visibility"
+            @change="onChange($event.target.value)"
           >
-            View comments
-          </button>
-          <template v-if="isLoggedIn()">
-            <label for="visibility">Filter for:</label>
-            <select
-              name="visibility"
-              :value="visibility"
-              @change="onChange($event.target.value)"
-            >
-              <option value="all">All</option>
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-            </select>
-          </template>
-        </div>
+            <option value="all">All</option>
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+        </template>
         <CreateCommentForm
+          v-if="showComments"
           :freetId="freet._id"
         />
       </div>
@@ -63,10 +59,11 @@ import BlockPanel from '@/components/Block/BlockPanel.vue';
 import CommentThread from '@/components/Comment/CommentThread.vue';
 import CreateCommentForm from '@/components/Comment/CreateCommentForm.vue';
 import ReactionBar from '@/components/Reaction/ReactionBar.vue';
+import ExpandIcon from '@/components/common/ExpandIcon.vue';
 
 export default {
   name: 'FreetComponent',
-  components: {Post, CommentThread, CreateCommentForm, BlockPanel, ReactionBar},
+  components: {Post, CommentThread, CreateCommentForm, ExpandIcon, BlockPanel, ReactionBar},
   mixins: [LoginContent],
   props: {
     // Data from the stored freet
@@ -142,5 +139,13 @@ export default {
 .freet {
   border: 1px solid black;
   margin-bottom: 16px;
+}
+
+.comment-actions {
+  display: flex;
+  padding: 8px 0;
+}
+.comment-actions > button {
+  margin: auto;
 }
 </style>

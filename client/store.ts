@@ -18,6 +18,7 @@ const store = new Vuex.Store({
     blockedUsers: {},
     reactions: {},
     tags: {},
+    filters: [],
   },
   mutations: {
     alert(state, payload) {
@@ -42,6 +43,21 @@ const store = new Vuex.Store({
        * @param filter - Username of the user to fitler freets by
        */
       state.filter = filter;
+    },
+    addFilters(state, filterType) {
+      state.filters.push({
+        type: filterType,
+        value: null,
+      });
+    },
+    updateFilters(state, payload) {
+      Vue.set(state.filters, payload.index, {
+        ...state.filters[payload.index],
+        value: payload.value
+      });
+    },
+    deleteFilter(state, i) {
+      Vue.delete(state.filters, i);
     },
     updateCommentFilter(state, payload) {
       /**
@@ -105,7 +121,29 @@ const store = new Vuex.Store({
        */
        const res = await fetch(`/api/reactions?freetId=${freetId}`);
        const reactions = await res.json();
-       Vue.set(state.reactions, freetId, reactions);
+       const reactionTypes = [
+        'LOVE',
+        'HAHA',
+        'SAD',
+        'ANGRY',
+        'LIKE',
+        'DISLIKE',
+      ];
+      const freetReactions = reactionTypes.reduce((obj, type_) => {
+        obj[type_] = {
+          count: 0,
+          selectedReactionId: null,
+        };
+        return obj;
+      }, {});
+      const allReactions = reactions.reduce((allReacts, reaction) => {
+        allReacts[reaction.type].count++;
+        if (reaction.issuer === state.username) {
+          allReacts[reaction.type].selectedReactionId = reaction._id;
+        }
+        return allReacts;
+      }, freetReactions);
+      Vue.set(state.reactions, freetId, allReactions);
     },
     async refreshTags(state, freetId) {
       /**

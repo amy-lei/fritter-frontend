@@ -55,8 +55,7 @@
       Posted at {{ post.dateModified }}
       <i v-if="post.edited">(edited)</i>
     </p>
-    <template v-if="tags">
-      <hr/>
+    <div v-if="tags">
       <TagComponent
         v-for="(tag, i) in tags"
         :tag="editedTags[tag._id] || tag.label"
@@ -79,7 +78,7 @@
           + Add tags
         </button>
       </template>
-    </template>
+    </div>
     <slot name="reactions"></slot>
     <section class="alerts">
       <article

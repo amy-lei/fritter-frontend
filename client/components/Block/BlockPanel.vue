@@ -6,10 +6,7 @@
       @click="showContent = !showContent"
     >
       Content posted by a blocked user
-			<span
-				class='icon'
-				:class='{ "active": showContent }'
-			></span>
+      <ExpandIcon :active="showContent"/>
     </div>
     <collapse-transition mode="out-in">
       <div
@@ -23,11 +20,12 @@
 </template>
 
 <script>
-import { CollapseTransition } from "@ivanv/vue-collapse-transition"
+import { CollapseTransition } from "@ivanv/vue-collapse-transition";
+import ExpandIcon from "@/components/common/ExpandIcon.vue";
 
 export default {
   name: 'BlockPanel',
-  components: {CollapseTransition},
+  components: {CollapseTransition, ExpandIcon},
   props: {
     username: {
       type: String,
@@ -62,35 +60,6 @@ export default {
 }
 .v-enter-from, .v-leave-to {
   max-height: 0;
-}
-
-.icon {
-	position: relative;
-	margin: 0;
-	margin-left: 8px;
-	padding: 0;
-	width: 1em;
-	height: 1em;
-	box-sizing: border-box;
-}
-.icon:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: .4em;
-  height: .4em;
-  border-width: 1.5px 1.5px 0 0;
-  border-style: solid;
-  border-color: initial;
-  transform: rotate(45deg) translate(0, -50%);
-  transform-origin: top;
-  transition: transform .3s ease-out;
-  box-sizing: border-box;
-}
-
-.icon.active:after {
-  transform: rotate(135deg) translate(0, -50%);
 }
 
 </style>
