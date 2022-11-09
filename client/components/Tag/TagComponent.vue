@@ -12,7 +12,7 @@
       </button>
     </template>
     <template v-else>
-      <p class="tag-label">{{ tag }}</p>
+      <p class="tag-label" @click="filterByTag">{{ tag }}</p>
     </template>
   </div>
 </template>
@@ -32,6 +32,15 @@ export default {
       required: true,
     },
   },
+  methods: {
+    filterByTag() {
+      this.$store.commit('addFilters', 'tag');
+      this.$store.commit('updateFilters', {
+        index: this.$store.state.filters.length - 1,
+        value: this.tag,
+      });
+    }
+  }
 }
 </script>
 
@@ -75,6 +84,12 @@ export default {
   margin: 0;
   padding: 4px 12px 4px 0;
   border-radius: 0 100px 100px 0;
+  cursor: pointer;
+  transition: all 0.1s ease-in;
 }
+.tag-form > .tag-label:hover {
+  filter: brightness(0.95);
+}
+
 
 </style>
