@@ -31,7 +31,7 @@
         <FreetFilter/>
       </header>
       <section
-        v-if="$store.state.freets.length"
+        v-if="freets.length"
       >
         <FreetComponent
           v-for="freet in freets"
